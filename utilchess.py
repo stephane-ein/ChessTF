@@ -44,39 +44,40 @@ class UtilChess:
         board = chess.Board()
         all_pieces_positions = []
         all_result = []
-        while game and game.variations:
-            game_model = game
-            nb_games += 1
-            # Get the first move (initialisation)
-            move1 = game.variations[0].move
-            # print("Learning moves from %s game " % game_model.headers["FICSGamesDBGameNo"])
-            while move1 is not None:
-                board.push(move1)
-                # print("Current move %r" % move1)
-                pieces_positions = UtilChess.get_pieces_positions_value(board)
-                # print("Pieces positions %r" % pieces_positions)
-                # Here we retrieve the result and we have the corresponding the chance of wininng
-                # e.g [1, 0, 0] meaning that the Black won the game
-                # e.g [0, 0, 1] meaning that the White won the game
-                result_str = game_model.headers["Result"]
-                if result_str == "0-1":
-                    result = [1, 0, 0]
-                elif result_str == "1-0":
-                    result = [0, 0, 1]
-                else:
-                    result = [0, 1, 0]
-                all_pieces_positions.append(pieces_positions)
-                all_result.append(result)
+        while game:
+            if game.variations:
+                game_model = game
+                nb_games += 1
+                # Get the first move (initialisation)
+                move1 = game.variations[0].move
+                # print("Learning moves from %s game " % game_model.headers["FICSGamesDBGameNo"])
+                while move1 is not None:
+                    board.push(move1)
+                    # print("Current move %r" % move1)
+                    pieces_positions = UtilChess.get_pieces_positions_value(board)
+                    # print("Pieces positions %r" % pieces_positions)
+                    # Here we retrieve the result and we have the corresponding the chance of wininng
+                    # e.g [1, 0, 0] meaning that the Black won the game
+                    # e.g [0, 0, 1] meaning that the White won the game
+                    result_str = game_model.headers["Result"]
+                    if result_str == "0-1":
+                        result = [1, 0, 0]
+                    elif result_str == "1-0":
+                        result = [0, 0, 1]
+                    else:
+                        result = [0, 1, 0]
+                    all_pieces_positions.append(pieces_positions)
+                    all_result.append(result)
 
-                # print("Result of the game %r" % result)
-                nb_moves += 1
+                    # print("Result of the game %r" % result)
+                    nb_moves += 1
 
-                # Move to the wanted position and print the next move
-                game = game.variation(move1)
-                if game.is_end():
-                    move1 = None
-                else:
-                    move1 = game.variations[0].move
+                    # Move to the wanted position and print the next move
+                    game = game.variation(move1)
+                    if game.is_end():
+                        move1 = None
+                    else:
+                        move1 = game.variations[0].move
 
             board = chess.Board()
             game = chess.pgn.read_game(pgn)
