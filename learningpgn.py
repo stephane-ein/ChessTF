@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 class LearningPGN:
 
     def learn(self):
-        mypath = os.getcwd() + "/training2/"
+        #mypath = os.getcwd() + "/training2/"
+        mypath = "/mnt/volume-fra1-01/ChessTF/training/"
         board = chess.Board()
         # Get pieces (SquareByte (en gros un byte))
         squaret = board.pieces(chess.PAWN, chess.WHITE)
