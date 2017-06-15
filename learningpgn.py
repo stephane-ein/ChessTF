@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class LearningPGN:
 
     def learn(self):
-        #mypath = os.getcwd() + "/training2/"
+        # mypath = os.getcwd() + "/training2/"
         mypath = "/mnt/volume-fra1-01/ChessTF/training/"
         board = chess.Board()
         # Get pieces (SquareByte (en gros un byte))
@@ -91,20 +91,21 @@ class LearningPGN:
                 pgn = open(mypath + pgn_file)
                 game = chess.pgn.read_game(pgn)
 
-                # Retrieve all the game moves from teh training data set
-                all_pieces_positions, all_result, nb_games, nb_moves = UtilChess.get_chess_material_positions(
-                    game, pgn)
-                nb_total_game += nb_games
-                nb_total_moves += nb_moves
-
-                # Train the AI
-                sess.run(train_step, feed_dict={
-                    x: all_pieces_positions, y_: all_result})
+                while game:
+                    # Retrieve all the game moves from teh training data set
+                    all_pieces_positions, all_result, nb_games, nb_moves, game = UtilChess.get_chess_material_positions(
+                        game, pgn)
+                    nb_total_game += nb_games
+                    nb_total_moves += nb_moves
+                    # Train the AI
+                    sess.run(train_step, feed_dict={
+                        x: all_pieces_positions, y_: all_result})
+                    logger.debug("%r games for file %s" % (nb_games, pgn_file))
 
                 # logger.debug the wieght generated and the bias
                 # logger.debug("Weight for %s game %r" % (nb_games, sess.run(W)))
                 # logger.debug("Bias for %s game %r" % (nb_games, sess.run(b)))
-                logger.debug("%r games for file %s" % (nb_games, pgn_file))
+                # logger.debug("%r games for file %s" % (nb_games, pgn_file))
             except Exception:
                 logger.debug("[ERROR] Error when parsing file: %r" % pgn_file)
             files_process += 1
@@ -175,7 +176,7 @@ class LearningPGN:
         game = chess.pgn.read_game(pgn)
         # Retrieve all the game moves from the training data set and computes the
         # accurary
-        all_pieces_positions, all_result, nb_games, nb_moves = UtilChess.get_chess_material_positions(
+        all_pieces_positions, all_result, nb_games, nb_moves, game = UtilChess.get_chess_material_positions(
             game, pgn)
         correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))

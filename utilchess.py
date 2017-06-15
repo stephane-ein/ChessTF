@@ -44,7 +44,7 @@ class UtilChess:
         board = chess.Board()
         all_pieces_positions = []
         all_result = []
-        while game:
+        while game and nb_games < 200:
             if game.variations:
                 game_model = game
                 nb_games += 1
@@ -82,4 +82,4 @@ class UtilChess:
             board = chess.Board()
             game = chess.pgn.read_game(pgn)
 
-        return [all_pieces_positions, all_result, nb_games, nb_moves]
+        return [all_pieces_positions, all_result, nb_games, nb_moves, game]

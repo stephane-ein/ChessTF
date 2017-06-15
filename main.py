@@ -21,7 +21,7 @@ def main():
     learning = LearningPGN()
     # learning = Learning()
     learning.learn()
-    logger.info("TIme process %s" % (time.time() - start_time))
+    logger.info("Time process %s" % (time.time() - start_time))
 
 
 if __name__ == "__main__":
