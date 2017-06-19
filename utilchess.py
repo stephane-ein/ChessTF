@@ -44,7 +44,7 @@ class UtilChess:
         board = chess.Board()
         all_pieces_positions = []
         all_result = []
-        while game and nb_games < 200:
+        while game and nb_games < 265:
             if game.variations:
                 game_model = game
                 nb_games += 1

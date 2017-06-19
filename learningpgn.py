@@ -13,8 +13,18 @@ logger = logging.getLogger(__name__)
 class LearningPGN:
 
     def learn(self):
-        # mypath = os.getcwd() + "/training2/"
-        mypath = "/mnt/volume-fra1-01/ChessTF/training/"
+        # paths = [os.getcwd() + "/training2/"]
+        paths = ["/mnt/volume-fra1-01/ChessTF/training/", "/mnt/volume-fra1-02/ChessTF/training/", "/home/ChessTF/training"]
+
+        # Get pgn files
+        pgn_files = []
+        for path in paths:
+            for f in listdir(path):
+                if isfile(join(path, f)):
+                    pgn_files.append(path + f)
+       
+        logger.debug("Files %r" % pgn_files)
+
         board = chess.Board()
         # Get pieces (SquareByte (en gros un byte))
         squaret = board.pieces(chess.PAWN, chess.WHITE)
@@ -81,26 +91,25 @@ class LearningPGN:
         # Stats about the game
         nb_total_game = 0
         nb_total_moves = 0
-        # Get pgn files
-        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        nb_files = len(onlyfiles)
+        nb_files = len(pgn_files)
         files_process = 0
-        for pgn_file in onlyfiles:
+        for pgn_file in pgn_files:
             logger.debug("Retrieving game from %s..." % pgn_file)
             try:
-                pgn = open(mypath + pgn_file)
+                pgn = open(pgn_file)
                 game = chess.pgn.read_game(pgn)
-
+                games_current = 0
                 while game:
                     # Retrieve all the game moves from teh training data set
                     all_pieces_positions, all_result, nb_games, nb_moves, game = UtilChess.get_chess_material_positions(
                         game, pgn)
                     nb_total_game += nb_games
+                    games_current += nb_games
                     nb_total_moves += nb_moves
                     # Train the AI
                     sess.run(train_step, feed_dict={
                         x: all_pieces_positions, y_: all_result})
-                    logger.debug("%r games for file %s" % (nb_games, pgn_file))
+                    logger.debug("%r games for file %s and %r total game learned (%s for current file)" % (nb_games, pgn_file, nb_total_game, games_current))
 
                 # logger.debug the wieght generated and the bias
                 # logger.debug("Weight for %s game %r" % (nb_games, sess.run(W)))
@@ -118,10 +127,10 @@ class LearningPGN:
 
         # Now let's test the AI and 0 it's a Black win, 1, draw and 2 white
         # win.
-        # pgn = open(mypath + onlyfiles[0])
+        # pgn = open(mypath + pgn_files[0])
         # mypathtest = os.getcwd() + "/test/"
-        # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        # pgn = open(mypathtest + onlyfiles[0])
+        # pgn_files = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+        # pgn = open(mypathtest + pgn_files[0])
         # correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
         # accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
         # test_all_pieces_position = []
@@ -171,8 +180,8 @@ class LearningPGN:
         #       ((nb_valid_predictions * 100) / nb_predictions))
 
         mypathtest = os.getcwd() + "/test/"
-        onlyfiles = [f for f in listdir(mypathtest) if isfile(join(mypathtest, f))]
-        pgn = open(mypathtest + onlyfiles[0])
+        pgn_files = [f for f in listdir(mypathtest) if isfile(join(mypathtest, f))]
+        pgn = open(mypathtest + pgn_files[0])
         game = chess.pgn.read_game(pgn)
         # Retrieve all the game moves from the training data set and computes the
         # accurary
