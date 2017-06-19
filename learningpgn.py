@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 class LearningPGN:
 
     def learn(self):
-        # paths = [os.getcwd() + "/training2/"]
-        paths = ["/mnt/volume-fra1-01/ChessTF/training/", "/mnt/volume-fra1-02/ChessTF/training/", "/home/ChessTF/training"]
+        paths = [os.getcwd() + "/training2/"]
+        # paths = ["/mnt/volume-fra1-01/ChessTF/training/", "/mnt/volume-fra1-02/ChessTF/training/", "/home/scay/ChessTF/training"]
 
         # Get pgn files
         pgn_files = []

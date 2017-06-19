@@ -11,7 +11,7 @@ logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s] %(message)s")
 consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
 logging.basicConfig(
-    filename="{0}/chess-ai-{1}.log".format(path_log, log_file), level=logging.DEBUG)
+    filename="{0}/chess-ai-{1}.log".format(path_log, log_file), level=logging.DEBUG, format="%(asctime)s [%(levelname)-5.5s] %(message)s")
 logging.getLogger().addHandler(consoleHandler)
 logger = logging.getLogger(__name__)
 
